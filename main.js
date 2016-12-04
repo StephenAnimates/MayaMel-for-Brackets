@@ -2,16 +2,14 @@
 /*global define, brackets */
 
 /*
- * Brackets template syntax highlighter
+ * Brackets Mel script syntax highlighter
  * 
  * 
  */
 
-
 define(function (require, exports, module) {
     "use strict";
-    
-    
+
     var CodeMirror = brackets.getModule("thirdparty/CodeMirror2/lib/codemirror"),
         LanguageManager = brackets.getModule("language/LanguageManager");
     
@@ -27,31 +25,11 @@ define(function (require, exports, module) {
             { regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: "string" },
 
             // identify comments
-            
-            // trying to deal with comments
-            //{ regex: /\/\*/, token: "comment", next: "comment" },
-            //{ regex: /\/\*/, token: "meta", mode: {spec: "comment", end: /\*\//},
-            //{ regex: /\/+\*(?:[^\\]|\\.)*?(?:\*+\/|$)/, token: "comment"},
-            //{ regex: /\*([^*]|[\r\n]|(\*+([^\*\/]|[\r\n])))*\*+/, token: "comment"},
-            //{ regex: /\/\*[\s\S\n\r]*?\*\//g, token: "comment"},
-            
-            
+
             // single line comments with two back slashes
             { regex: /\/\/.*/, token: "comment"},
-
-            
-            
-            //{regex: /\/\*[\W\w\r\n]*\*\//, token: "comment", mode: {spec: "comment", end: /\*\// }},
-            
-            //{regex: /\/\*.*/, mode: {spec: "comment", end: /[.*\*\/]/}, token: ["comment", "comment"]},
+            // multiline comments - this seemed to be the only way to handle them
             {regex: /\/\*/, mode: {persistent: 1, end: /\*\//}, token: "comment"},
-            
-            // this shold be a single line comment
-            // { regex: /\/\*.*/, token: "comment", next: "comment"},
-            // { regex: /\*\//, token: "comment"},
-            
-            
-            
             
             { regex: /(?:global|proc|string)\b/, token: "attribute" },
             { regex: /(?:int|true|false|float)\b/, token: "atom" },
@@ -74,21 +52,11 @@ define(function (require, exports, module) {
             {regex: /[\{\[\(]/, pop: true, indent: true},
             {regex: /[\}\]\)]/, pop: true, dedent: true}
         ],
-        
-        // The multi-line comment state, between the lines
-        comment: [
-            //{ regex: /\/+\*(?:[^\\]|\\.)*?(?:\*+\/|$)/, token: ["comment"] },
-            //{ regex: /(\/\*.*)/, pop: true, token: "comment", next: "start" },
-            //{ regex: /.*/, token: "comment" },
-            //{ regex: /\/\/.*/, token: "comment" }
-            //{regex: /.*?\*\//, token: "comment", next: "start"},
-            //{regex: /.*/, token: "comment"}
-        ],
         meta: {
             dontIndentStates: ["comment"]
-            //lineComment: "//",
-            //blockCommentStart: "/*",
-            //blockCommentEnd: "*/"
+            lineComment: "//",
+            blockCommentStart: "/*",
+            blockCommentEnd: "*/"
         }
     });
 
@@ -96,8 +64,7 @@ define(function (require, exports, module) {
         name: "mel",
         mode: "mel",
         fileExtensions: ["mel"]
-        //blockComment: ["/*", "*/"],
-        //lineComment: ["//"]
+        blockComment: ["/*", "*/"],
+        lineComment: ["//"]
     });
-
 });
